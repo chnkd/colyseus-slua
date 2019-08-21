@@ -2,8 +2,8 @@
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 # copy slua copy to luajit folder
-cp slua.c luasocket/* luajit-2.1.0-beta3/src/
-cd luajit-2.1.0-beta3
+cp slua.c luasocket/* luajit/src/
+cd luajit
 SRCDIR=$(pwd)
 DIR=$(pwd)
 
