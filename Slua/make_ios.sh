@@ -59,6 +59,6 @@ cd src
 lipo libsluav7.a -create libsluav7s.a libslua64.a libluajit-i386.a libluajit-x86_64.a -output libslua.a
 #lipo libsluav7.a -create libsluav7s.a libslua64.a -output libslua.a
 
-cp libslua.a ../../../Assets/Plugins/iOS/
+cp libslua.a ../../../Assets/Plugins/Slua/iOS/
 
 cd ..

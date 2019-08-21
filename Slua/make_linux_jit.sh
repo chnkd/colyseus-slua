@@ -10,11 +10,11 @@ echo "Building Slua-Linux-32...."
 cd luajit
 make clean
 make CC="gcc -m32" BUILDMODE=dynamic
-cp src/libluajit.so ../../Assets/Plugins/x86/slua.so
+cp src/libluajit.so ../../Assets/Plugins/Slua/x86/slua.so
 
 
 echo "Building SLua-Linux-64....."
 make clean
 make CC="gcc" BUILDMODE=dynamic
-cp src/libluajit.so ../../Assets/Plugins/x64/slua.so
+cp src/libluajit.so ../../Assets/Plugins/Slua/x64/slua.so
 echo "Build Slua Linux success!"

@@ -27,7 +27,7 @@ make clean
 make HOST_CC="gcc -m32" CROSS=$NDKP TARGET_SYS=Linux TARGET_FLAGS="$NDKF $NDKARCH" TARGET_SONAME=libslua.so BUILDMODE=dynamic
 
 if [ -f $SRCDIR/src/libluajit.so ]; then
-    cp $SRCDIR/src/libluajit.so ../../Assets/Plugins/Android/libs/armeabi-v7a/libslua.so
+    cp $SRCDIR/src/libluajit.so ../../Assets/Plugins/Slua/Android/libs/armeabi-v7a/libslua.so
 fi;
 
 # Android/x86, x86 (i686 SSE3), Android 4.0+ (ICS)
@@ -42,7 +42,7 @@ make clean
 make HOST_CC="gcc -m32" CROSS=$NDKP TARGET_SYS=Linux TARGET_FLAGS="$NDKF"
 
 if [ -f $SRCDIR/src/libluajit.so ]; then
-    cp $SRCDIR/src/libluajit.so ../../Assets/Plugins/Android/libs/x86/libslua.so
+    cp $SRCDIR/src/libluajit.so ../../Assets/Plugins/Slua/Android/libs/x86/libslua.so
 fi;
 
 # make clean
