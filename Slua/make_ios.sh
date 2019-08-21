@@ -29,15 +29,15 @@ fi
 
 make clean
 ISDKF="-arch armv7 -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=$DEVTAR"
-make HOST_CC="gcc -m32 -std=c99" CROSS="$ISDKP" TARGET_FLAGS="$ISDKF" TARGET=armv7 TARGET_SYS=iOS LUAJIT_A=libsluav7.a
+make HOST_CC="gcc -m32 -std=c99" CROSS="$ISDKP" TARGET_FLAGS="$ISDKF" TARGET=armv7 TARGET_SYS=iOS LUAJIT_A=libsluav7.a CFLAGS=-DLJ_NO_SYSTEM
 
 make clean
 ISDKF="-arch armv7s -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=$DEVTAR"
-make HOST_CC="gcc -m32 -std=c99" CROSS="$ISDKP" TARGET_FLAGS="$ISDKF" TARGET=armv7s TARGET_SYS=iOS LUAJIT_A=libsluav7s.a
+make HOST_CC="gcc -m32 -std=c99" CROSS="$ISDKP" TARGET_FLAGS="$ISDKF" TARGET=armv7s TARGET_SYS=iOS LUAJIT_A=libsluav7s.a CFLAGS=-DLJ_NO_SYSTEM
 
 make clean
 ISDKF="-arch arm64 -isysroot $ISDK/SDKs/$ISDKVER -miphoneos-version-min=$DEVTAR"
-make HOST_CC="gcc -std=c99" CROSS="$ISDKP" TARGET_FLAGS="$ISDKF" TARGET=arm64 TARGET_SYS=iOS LUAJIT_A=libslua64.a
+make HOST_CC="gcc -std=c99" CROSS="$ISDKP" TARGET_FLAGS="$ISDKF" TARGET=arm64 TARGET_SYS=iOS LUAJIT_A=libslua64.a CFLAGS=-DLJ_NO_SYSTEM
 
 # add simulator support
 ISDK=$IXCODE/Platforms/iPhoneSimulator.platform/Developer
@@ -48,12 +48,12 @@ ISDKP=/usr/bin/
 
 make clean
 ISDKF="-arch i386 -isysroot $ISDK/SDKs/$ISDKVER -mios-simulator-version-min=$DEVTAR"
-make HOST_CC="gcc -m32 -arch i386" CROSS=$ISDKP TARGET_FLAGS="$ISDKF" TARGET=i386 TARGET_SYS=iOS  LUAJIT_A=libluajit-i386.a
+make HOST_CC="gcc -m32 -arch i386" CROSS=$ISDKP TARGET_FLAGS="$ISDKF" TARGET=i386 TARGET_SYS=iOS  LUAJIT_A=libluajit-i386.a CFLAGS=-DLJ_NO_SYSTEM
 
 
 make clean
 ISDKF="-arch x86_64 -isysroot $ISDK/SDKs/$ISDKVER -mios-simulator-version-min=$DEVTAR"
-make HOST_CC="gcc -m64 -arch x86_64" CROSS=$ISDKP TARGET_FLAGS="$ISDKF" TARGET=x86_64 TARGET_SYS=iOS  LUAJIT_A=libluajit-x86_64.a CFLAGS=-DLUAJIT_ENABLE_GC64
+make HOST_CC="gcc -m64 -arch x86_64" CROSS=$ISDKP TARGET_FLAGS="$ISDKF" TARGET=x86_64 TARGET_SYS=iOS  LUAJIT_A=libluajit-x86_64.a CFLAGS="-DLUAJIT_ENABLE_GC64 -DLJ_NO_SYSTEM"
 
 cd src
 lipo libsluav7.a -create libsluav7s.a libslua64.a libluajit-i386.a libluajit-x86_64.a -output libslua.a
