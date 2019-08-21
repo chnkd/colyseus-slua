@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd "$( dirname "${BASH_SOURCE[0]}" )"
-cp slua.c luasocket/* luajit-2.1.0-beta3/src/
-cd luajit-2.1.0-beta3
+cp slua.c luasocket/* luajit/src/
+cd luajit
 
 
 LIPO="xcrun -sdk iphoneos lipo"
