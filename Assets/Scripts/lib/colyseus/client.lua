@@ -4,7 +4,7 @@ local Room = require('Scripts/lib/colyseus.room')
 -- local Push = require('Scripts/lib/colyseus.push')
 local protocol = require('Scripts/lib/colyseus.protocol')
 local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
-local storage = require('Scripts/lib/colyseus.storage')
+-- local storage = require('Scripts/lib/colyseus.storage')
 
 local utils = require('Scripts/lib/colyseus.utils')
 local decode = require('Scripts/lib/colyseus.serialization.schema.schema')
