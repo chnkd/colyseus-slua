@@ -1,7 +1,7 @@
-local protocol = require('colyseus.protocol')
-local EventEmitter = require('colyseus.eventemitter')
+local protocol = require('Scripts/lib/colyseus.protocol')
+local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 
-local msgpack = require('colyseus.messagepack.MessagePack')
+local msgpack = require('Scripts/lib/colyseus.messagepack.MessagePack')
 local websocket_async = require "websocket.client_async"
 
 local connection = {}

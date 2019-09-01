@@ -1,6 +1,6 @@
 local serializers = {
-    ['fossil-delta'] = require('colyseus.serialization.fossil_delta'),
-    ['schema'] = require('colyseus.serialization.schema')
+    ['fossil-delta'] = require('Scripts/lib/colyseus.serialization.fossil_delta'),
+    ['schema'] = require('Scripts/lib/colyseus.serialization.schema')
 }
 
 local exports = {}

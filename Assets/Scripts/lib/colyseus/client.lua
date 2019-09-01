@@ -1,15 +1,15 @@
-local Connection = require('colyseus.connection')
-local Auth = require('colyseus.auth')
-local Room = require('colyseus.room')
-local Push = require('colyseus.push')
-local protocol = require('colyseus.protocol')
-local EventEmitter = require('colyseus.eventemitter')
-local storage = require('colyseus.storage')
+local Connection = require('Scripts/lib/colyseus.connection')
+local Auth = require('Scripts/lib/colyseus.auth')
+local Room = require('Scripts/lib/colyseus.room')
+local Push = require('Scripts/lib/colyseus.push')
+local protocol = require('Scripts/lib/colyseus.protocol')
+local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
+local storage = require('Scripts/lib/colyseus.storage')
 
-local utils = require('colyseus.utils')
-local decode = require('colyseus.serialization.schema.schema')
-local JSON = require('colyseus.serialization.json')
-local msgpack = require('colyseus.messagepack.MessagePack')
+local utils = require('Scripts/lib/colyseus.utils')
+local decode = require('Scripts/lib/colyseus.serialization.schema.schema')
+local JSON = require('Scripts/lib/colyseus.serialization.json')
+local msgpack = require('Scripts/lib/colyseus.messagepack.MessagePack')
 
 local client = {}
 client.__index = client
