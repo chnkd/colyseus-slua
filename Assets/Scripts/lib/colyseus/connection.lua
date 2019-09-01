@@ -20,13 +20,6 @@ function connection:init()
   self.is_html5 = sys.get_sys_info().system_name == "HTML5"
 end
 
-function connection:loop(timeout)
-  if self.ws then
-    self.ws:step()
-    socket.select(nil, nil, timeout or 0.001)
-  end
-end
-
 function connection:send(data)
   if self.ws and self.ws.state == "OPEN" then
     if self.is_html5 then
