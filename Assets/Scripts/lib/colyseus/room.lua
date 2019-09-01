@@ -1,13 +1,13 @@
-local msgpack = require('colyseus.messagepack.MessagePack')
+local msgpack = require('Scripts/lib/colyseus.messagepack.MessagePack')
 
-local Connection = require('colyseus.connection')
-local protocol = require('colyseus.protocol')
+local Connection = require('Scripts/lib/colyseus.connection')
+local protocol = require('Scripts/lib/colyseus.protocol')
 
-local EventEmitter = require('colyseus.eventemitter')
-local utils = require('colyseus.utils')
-local decode = require('colyseus.serialization.schema.schema')
-local storage = require('colyseus.storage')
-local serialization = require('colyseus.serialization')
+local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
+local utils = require('Scripts/lib/colyseus.utils')
+local decode = require('Scripts/lib/colyseus.serialization.schema.schema')
+local storage = require('Scripts/lib/colyseus.storage')
+local serialization = require('Scripts/lib/colyseus.serialization')
 
 Room = {}
 Room.__index = function (self, key)

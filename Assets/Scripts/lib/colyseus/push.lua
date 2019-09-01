@@ -1,6 +1,6 @@
-local utils = require "colyseus.utils"
-local storage = require "colyseus.storage"
-local EventEmitter = require('colyseus.eventemitter')
+local utils = require('Scripts/lib/colyseus.utils')
+local storage = require('Scripts/lib/colyseus.storage')
+local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 
 local Push = {}
 Push.__index = Push
