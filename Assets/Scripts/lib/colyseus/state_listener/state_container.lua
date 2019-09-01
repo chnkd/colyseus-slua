@@ -1,5 +1,5 @@
-local compare = require('colyseus.state_listener.compare')
-local EventEmitter = require('colyseus.eventemitter')
+local compare = require('Scripts/lib/colyseus.state_listener.compare')
+local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 
 local function split(str, delimiter)
   local result = { }
