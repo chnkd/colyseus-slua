@@ -1,5 +1,5 @@
-local Schema = require('colyseus.serialization.schema.schema')
-local utils = require('colyseus.utils')
+local Schema = require('Scripts/lib/colyseus.serialization.schema.schema')
+local utils = require('Scripts/lib/colyseus.utils')
 
 local schema_serializer = {}
 schema_serializer.__index = schema_serializer

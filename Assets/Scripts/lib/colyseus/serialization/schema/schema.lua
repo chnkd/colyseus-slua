@@ -4,7 +4,7 @@
 --
 -- This file is part of Colyseus: https://github.com/colyseus/colyseus
 --
-local bit = require 'colyseus.serialization.bit'
+local bit = require 'Scripts/lib/colyseus.serialization.bit'
 local ldexp = math.ldexp or mathx.ldexp
 
 -- START SPEC --
