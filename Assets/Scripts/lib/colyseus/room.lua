@@ -79,12 +79,6 @@ function Room:remove_listener (listener)
   return self.serializer.state:remove_listener(listener)
 end
 
-function Room:loop (timeout)
-  if self.connection ~= nil then
-    self.connection:loop(timeout)
-  end
-end
-
 function Room:on_batch_message(binary_string)
   local total_bytes = #binary_string
   local cursor = { offset = 1 }
