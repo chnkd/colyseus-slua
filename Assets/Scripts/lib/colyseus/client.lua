@@ -1,7 +1,7 @@
 local Connection = require('Scripts/lib/colyseus.connection')
-local Auth = require('Scripts/lib/colyseus.auth')
+-- local Auth = require('Scripts/lib/colyseus.auth')
 local Room = require('Scripts/lib/colyseus.room')
-local Push = require('Scripts/lib/colyseus.push')
+-- local Push = require('Scripts/lib/colyseus.push')
 local protocol = require('Scripts/lib/colyseus.protocol')
 local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 local storage = require('Scripts/lib/colyseus.storage')
@@ -29,8 +29,8 @@ function client:init(endpoint)
     self.hostname = self.hostname .. "/"
   end
 
-  self.auth = Auth.new(endpoint)
-  self.push = Push.new(endpoint)
+  -- self.auth = Auth.new(endpoint)
+  -- self.push = Push.new(endpoint)
 
   self.rooms = {}
 end
@@ -75,9 +75,9 @@ function client:create_matchmake_request(method, room_name, options, callback)
     options = {}
   end
 
-  if self.auth:has_token() then
-    options.token = self.auth.token
-  end
+  -- if self.auth:has_token() then
+  --   options.token = self.auth.token
+  -- end
 
   local headers = {
     ['Accept'] = 'application/json',
