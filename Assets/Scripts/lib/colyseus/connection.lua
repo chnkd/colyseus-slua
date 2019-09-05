@@ -39,8 +39,6 @@ function connection:send(data)
 end
 
 function connection:open(endpoint)
-  self.endpoint = endpoint
-
   -- skip if connection is already open
   if self.state == 'OPEN' then
     return
