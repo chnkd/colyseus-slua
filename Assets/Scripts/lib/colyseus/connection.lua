@@ -7,10 +7,10 @@ local websocket_async = require "websocket.client_async"
 local connection = {}
 connection.__index = connection
 
-function connection.new (endpoint)
+function connection.new()
   local instance = EventEmitter:new()
   setmetatable(instance, connection)
-  instance:init(endpoint)
+  instance:init()
   return instance
 end
 
