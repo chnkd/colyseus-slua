@@ -73,7 +73,23 @@ namespace SLua
         {
             list = new List<string>
             {
-                // "UnityEngine.Font",
+                "UnityEngine.Debug",
+                "UnityEngine.Yield",
+                "UnityEngine.Object",
+                "UnityEngine.GameObject",
+                "UnityEngine.Resources",
+                "UnityEngine.Vector2",
+                "UnityEngine.Vector3",
+                "UnityEngine.Vector4",
+                "UnityEngine.Quaternion",
+                "UnityEngine.Transform",
+                "UnityEngine.RectTransform",
+                "UnityEngine.Color",
+                "UnityEngine.Color32",
+                "UnityEngine.Networking.UnityWebRequest",
+                "UnityEngine.Networking.UploadHandlerRaw",
+                "UnityEngine.Networking.DownloadHandler",
+                "UnityEngine.Networking.DownloadHandlerBuffer",
             };
         }
 
