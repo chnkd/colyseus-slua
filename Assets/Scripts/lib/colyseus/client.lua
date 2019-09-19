@@ -8,7 +8,7 @@ local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 
 local utils = require('Scripts/lib/colyseus.utils')
 local decode = require('Scripts/lib/colyseus.serialization.schema.schema')
-local JSON = require('Scripts/lib/colyseus.serialization.json')
+local json = require('Scripts/lib/colyseus.serialization.json')
 local msgpack = require('Scripts/lib/colyseus.messagepack.MessagePack')
 
 local client = {}
@@ -85,7 +85,7 @@ function client:create_matchmake_request(method, room_name, options, callback)
   }
 
   local url = "http" .. self.hostname:sub(3) .. "matchmake/" .. method .. "/" .. room_name
-  self:_request(url, 'POST', headers, JSON.encode(options), function(err, response)
+  self:_request(url, 'POST', headers, json.encode(options), function(err, response)
     if (err) then return callback(err) end
 
     local room = Room.new(room_name)
