@@ -46,10 +46,6 @@ function Room:init(name)
 end
 
 function Room:connect (endpoint)
-  self.connection:on("open", function()
-     self:emit("join")
-  end)
-
   self.connection:on("message", function(message)
     self:on_batch_message(message)
   end)
