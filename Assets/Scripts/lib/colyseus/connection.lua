@@ -2,7 +2,6 @@ local protocol = require('Scripts/lib/colyseus.protocol')
 local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 
 local msgpack = require('Scripts/lib/colyseus.messagepack.MessagePack')
-local websocket_async = require "websocket.client_async"
 
 local connection = {}
 connection.__index = connection
@@ -17,7 +16,7 @@ end
 function connection:init()
   self._enqueuedCalls = {}
   self.state = "CONNECTING"
-  self.is_html5 = sys.get_sys_info().system_name == "HTML5"
+  -- self.is_html5 = sys.get_sys_info().system_name == "HTML5"
 end
 
 function connection:send(data)
@@ -44,10 +43,10 @@ function connection:open(endpoint)
     return
   end
 
-  self.ws = websocket_async(self.config or {})
+  self.ws = WebSocket(endpoint)
 
-  self.ws:on_connected(function(ok, err)
-    self.state = self.ws.state
+  self.ws:RegOpenEvent(function()
+    self.state = 'OPEN' -- self.ws.state
     if err then
       self:emit("error", err)
       self:emit("close", e)
@@ -64,34 +63,26 @@ function connection:open(endpoint)
     end
   end)
 
-  self.ws:on_message(function(message)
-    self:emit("message", message)
+  self.ws:RegMessageEvent(function(message)
+    self:emit("message", Slua.ToString(message))
   end)
 
-  self.ws:on_disconnected(function(e)
+  self.ws:RegCloseEvent(function(e)
     self.state = "CLOSED"
     self:emit("close", e)
   end)
 
-  local ws_protocol = nil
-  local ssl_params = nil
-
-  if string.find(endpoint, "wss://") ~= nil then
-    ssl_params = {
-      mode = "client",
-      protocol = "tlsv1_2",
-      verify = "none",
-      options = "all",
-    }
-  end
-
-  self.ws:connect(endpoint, ws_protocol, ssl_params)
+  coroutine.resume(coroutine.create(function()
+    Yield(self.ws:Connect())
+  end))
 end
 
 function connection:close()
   self.state = "CLOSED"
   if self.ws then
-    self.ws:close()
+    coroutine.resume(coroutine.create(function()
+      self.ws:Close()
+    end))
     self.ws = nil
   end
 end

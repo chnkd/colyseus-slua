@@ -79,13 +79,8 @@ function client:create_matchmake_request(method, room_name, options, callback)
   --   options.token = self.auth.token
   -- end
 
-  local headers = {
-    ['Accept'] = 'application/json',
-    ['Content-Type'] = 'application/json'
-  }
-
   local url = "http" .. self.hostname:sub(3) .. "matchmake/" .. method .. "/" .. room_name
-  self:_request(url, 'POST', headers, json.encode(options), function(err, response)
+  self:_http(url, json.encode(options), function(err, response)
     if (err) then return callback(err) end
 
     local room = Room.new(room_name)
@@ -125,18 +120,22 @@ function client:_build_endpoint(path, options)
   return self.hostname .. path .. "?" .. table.concat(params, "&")
 end
 
-function client:_request(url, method, headers, body, callback)
-  http.request(url, method, function(self, id, response)
-		local data = response.response ~= '' and json.decode(response.response)
-    local has_error = (response.status >= 400)
+function client:_http(url, request, callback)
+  coroutine.resume(coroutine.create(function()
+    local post = UnityWebRequest(url, 'POST')
+    post.uploadHandler = UploadHandlerRaw(Util.UTF8Bytes('{"token":""}'))
+    post.downloadHandler = DownloadHandlerBuffer()
+    post:SetRequestHeader('Content-Type', 'application/json')
+    Yield(post:SendWebRequest())
+    local response = post.downloadHandler.text
+    local data = json.decode(response)
+    local has_error = post.responseCode >= 400
     local err = nil
-
     if has_error or data.error then
-      err = (not data or next(data) == nil) and response.response or data.error
+      err = (not data or next(data) == nil) and response or data.error
     end
-
     callback(err, data)
-	end, headers, body or "", { timeout = 10 })
+  end))
 end
 
 return client
