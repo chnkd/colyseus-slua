@@ -166,7 +166,7 @@ function Room:patch (binary_patch, it)
 end
 
 function Room:leave(consented)
-  if self.connection.state == "OPEN" then
+  if self.connection.state == "Open" then
     if consented or consented == nil then
       self.connection:send({ protocol.LEAVE_ROOM })
     else

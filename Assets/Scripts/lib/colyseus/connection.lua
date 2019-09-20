@@ -15,12 +15,12 @@ end
 
 function connection:init()
   self._enqueuedCalls = {}
-  self.state = "CONNECTING"
+  self.state = "Connecting"
   -- self.is_html5 = sys.get_sys_info().system_name == "HTML5"
 end
 
 function connection:send(data)
-  if self.ws and self.ws.state == "OPEN" then
+  if self.ws and self.ws.State == "Open" then
     if self.is_html5 then
       -- binary frames are sent by default on HTML5
       self.ws:send(msgpack.pack(data))
@@ -39,14 +39,14 @@ end
 
 function connection:open(endpoint)
   -- skip if connection is already open
-  if self.state == 'OPEN' then
+  if self.state == 'Open' then
     return
   end
 
   self.ws = WebSocket(endpoint)
 
   self.ws:RegOpenEvent(function()
-    self.state = 'OPEN' -- self.ws.state
+    self.state = self.ws.State
     if err then
       self:emit("error", err)
       self:emit("close", e)
@@ -68,7 +68,7 @@ function connection:open(endpoint)
   end)
 
   self.ws:RegCloseEvent(function(e)
-    self.state = "CLOSED"
+    self.state = "Closed"
     self:emit("close", e)
   end)
 
@@ -78,10 +78,10 @@ function connection:open(endpoint)
 end
 
 function connection:close()
-  self.state = "CLOSED"
+  self.state = "Closed"
   if self.ws then
     coroutine.resume(coroutine.create(function()
-      self.ws:Close()
+      Yield(self.ws:Close())
     end))
     self.ws = nil
   end
