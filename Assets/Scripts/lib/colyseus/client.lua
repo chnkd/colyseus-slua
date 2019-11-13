@@ -128,7 +128,10 @@ function client:_http(url, request, callback)
     post:SetRequestHeader('Content-Type', 'application/json')
     Yield(post:SendWebRequest())
     local response = post.downloadHandler.text
-    local data = json.decode(response)
+    local data = response ~= '' and json.decode(response)
+    if not data and post.responseCode == 0 then
+      return callback('offline')
+    end
     local has_error = post.responseCode >= 400
     local err = nil
     if has_error or data.error then
