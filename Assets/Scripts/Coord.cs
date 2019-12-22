@@ -28,8 +28,11 @@ public class Coord : MonoBehaviour
         }, LuaSvrFlag.LSF_BASIC | LuaSvrFlag.LSF_EXTLIB);
     }
 
-    private void OnDestroy()
+    private void OnApplicationQuit()
     {
-        game.invoke("Finish", game);
+        if (game != null)
+        {
+            game.invoke("Finish", game);
+        }
     }
 }
