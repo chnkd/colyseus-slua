@@ -7,6 +7,9 @@ function Game:Start()
     if err then
       return
     end
+    room:on("statechange", function(state)
+      print("new state:", require('Scripts/lib/inspect')(state))
+    end)
     table.insert(self.rooms, room)
   end)
 end
