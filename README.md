@@ -6,4 +6,4 @@
 
 ### v0.1.0
 - slua選用[v1.62](https://github.com/pangweiwei/slua/releases/tag/1.6.2)([fa8177d](https://github.com/pangweiwei/slua/commit/fa8177d516238c46dfaa156e72139756e96bfee3))，暫不考慮不支持LuaJIT的[v1.70](https://github.com/pangweiwei/slua/releases/tag/v1.7.0)([c1b60ba](https://github.com/pangweiwei/slua/commit/c1b60bac0bf202f96cc29ca3fec6a021b7d284df))。
-- colyseus-defold選用[7bf7219](https://github.com/colyseus/colyseus-defold/commit/7bf72199f921fa0d850e24605250286845e04526)。
+- colyseus-defold選用[dc7b331](https://github.com/colyseus/colyseus-defold/commit/dc7b331c70c7675df9a10403ac0ff7c050a9116b)。
