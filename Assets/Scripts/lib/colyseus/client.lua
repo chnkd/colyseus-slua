@@ -80,7 +80,7 @@ function client:create_matchmake_request(method, room_name, options, callback)
   -- end
 
   local url = "http" .. self.hostname:sub(3) .. "matchmake/" .. method .. "/" .. room_name
-  self:_request(url, json.encode(options), function(err, response)
+  self:_request(url, 'POST', function(err, response)
     if (err) then return callback(err) end
 
     local room = Room.new(room_name)
@@ -105,7 +105,7 @@ function client:create_matchmake_request(method, room_name, options, callback)
     self.rooms[room.id] = room
 
     room:connect(self:_build_endpoint(response.room.processId .. "/" .. room.id, {sessionId = room.sessionId}))
-  end)
+  end, json.encode(options))
 end
 
 function client:_build_endpoint(path, options)
@@ -120,24 +120,28 @@ function client:_build_endpoint(path, options)
   return self.hostname .. path .. "?" .. table.concat(params, "&")
 end
 
-function client:_request(url, options, callback)
+function client:_request(url, method, callback, options)
   coroutine.resume(coroutine.create(function()
-    local post = UnityWebRequest(url, 'POST')
-    post.uploadHandler = UploadHandlerRaw(Util.UTF8Bytes(options))
-    post.downloadHandler = DownloadHandlerBuffer()
-    post:SetRequestHeader('Content-Type', 'application/json')
-    Yield(post:SendWebRequest())
-    local response = post.downloadHandler.text
-    local data = response ~= '' and json.decode(response)
-    if not data and post.responseCode == 0 then
-      return callback('offline')
+    local request = UnityWebRequest(url, method)
+    if request then
+      if method == 'POST' then
+        request:SetRequestHeader('Content-Type', 'application/json')
+        request.uploadHandler = UploadHandlerRaw(Util.UTF8Bytes(options))
+      end
+      request.downloadHandler = DownloadHandlerBuffer()
+      Yield(request:SendWebRequest())
+      local response = request.downloadHandler.text
+      local data = response ~= '' and json.decode(response)
+      if not data and request.responseCode == 0 then
+        return callback('offline')
+      end
+      local has_error = request.responseCode >= 400
+      local err = nil
+      if has_error or data.error then
+        err = (not data or next(data) == nil) and response or data.error
+      end
+      callback(err, data)
     end
-    local has_error = post.responseCode >= 400
-    local err = nil
-    if has_error or data.error then
-      err = (not data or next(data) == nil) and response or data.error
-    end
-    callback(err, data)
   end))
 end
 
