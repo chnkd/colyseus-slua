@@ -1,9 +1,9 @@
 local Colyseus = require('Scripts/lib/colyseus.client')
 Game = {}
 function Game:Start()
-  local client = Colyseus.new("ws://rzcap:41003")
+  local client = Colyseus.new("ws://localhost:41003")
   self.rooms = {}
-  client:join_or_create('battle', function(err, room)
+  client:join_or_create('Battle', function(err, room)
     if err then
       return
     end
