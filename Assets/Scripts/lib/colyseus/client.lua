@@ -80,7 +80,7 @@ function client:create_matchmake_request(method, room_name, options, callback)
   -- end
 
   local url = "http" .. self.hostname:sub(3) .. "matchmake/" .. method .. "/" .. room_name
-  self:_http(url, json.encode(options), function(err, response)
+  self:_request(url, json.encode(options), function(err, response)
     if (err) then return callback(err) end
 
     local room = Room.new(room_name)
@@ -120,7 +120,7 @@ function client:_build_endpoint(path, options)
   return self.hostname .. path .. "?" .. table.concat(params, "&")
 end
 
-function client:_http(url, options, callback)
+function client:_request(url, options, callback)
   coroutine.resume(coroutine.create(function()
     local post = UnityWebRequest(url, 'POST')
     post.uploadHandler = UploadHandlerRaw(Util.UTF8Bytes(options))
