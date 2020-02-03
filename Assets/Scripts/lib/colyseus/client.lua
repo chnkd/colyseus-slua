@@ -120,10 +120,10 @@ function client:_build_endpoint(path, options)
   return self.hostname .. path .. "?" .. table.concat(params, "&")
 end
 
-function client:_http(url, request, callback)
+function client:_http(url, options, callback)
   coroutine.resume(coroutine.create(function()
     local post = UnityWebRequest(url, 'POST')
-    post.uploadHandler = UploadHandlerRaw(Util.UTF8Bytes('{"token":""}'))
+    post.uploadHandler = UploadHandlerRaw(Util.UTF8Bytes(options))
     post.downloadHandler = DownloadHandlerBuffer()
     post:SetRequestHeader('Content-Type', 'application/json')
     Yield(post:SendWebRequest())
