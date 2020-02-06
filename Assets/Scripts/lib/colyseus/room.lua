@@ -82,77 +82,68 @@ end
 function Room:on_batch_message(binary_string)
   local total_bytes = #binary_string
   local cursor = { offset = 1 }
-  -- print("Room:on_batch_message, bytes =>", total_bytes)
+  -- print("Room:on_batch_message, total_bytes =>", total_bytes)
   while cursor.offset <= total_bytes do
-    -- print("Room:on_message (batch",total_bytes,"), offset =>", cursor.offset, ", byte on offset =>", string.byte(binary_string, cursor.offset))
-    self:on_message(binary_string:sub(cursor.offset), cursor)
+    -- print("Room:on_message (total_bytes:",total_bytes,"), offset =>", cursor.offset, ", byte on offset =>", string.byte(binary_string, cursor.offset))
+    self:on_message(binary_string, cursor)
   end
 end
 
-function Room:on_message (binary_string, cursor)
-  local it = { offset = 1 }
+function Room:on_message (binary_string, it)
+  -- local it = { offset = 1 }
+  local message = utils.string_to_byte_array(binary_string)
 
-  if self.previous_code == nil then
-    local message = utils.string_to_byte_array(binary_string)
+  local code = message[it.offset]
+  it.offset = it.offset + 1
 
-    local code = message[it.offset]
-    it.offset = it.offset + 1
+  if code == protocol.JOIN_ROOM then
+    self.serializer_id = decode.string(message, it)
 
-    if code == protocol.JOIN_ROOM then
-      self.serializer_id = decode.string(message, it)
-
-      local serializer = serialization.get_serializer(self.serializer_id)
-      if not serializer then
-        error("missing serializer: " .. self.serializer_id);
-      end
-
-      if self.serializer_id ~= "fossil-delta" then
-        self.serializer = serializer.new()
-      end
-
-      if #message > it.offset and self.serializer.handshake ~= nil then
-        self.serializer:handshake(message, it)
-      end
-
-      self:emit("join")
-
-    elseif code == protocol.JOIN_ERROR then
-      local err = decode.string(message, it)
-      self:emit("error", err)
-
-    elseif code == protocol.LEAVE_ROOM then
-      self:leave()
-
-    else
-      self.previous_code = code
+    local serializer = serialization.get_serializer(self.serializer_id)
+    if not serializer then
+      error("missing serializer: " .. self.serializer_id);
     end
 
-  else
-    -- print("PREVIOUS CODE", self.previous_code)
-
-    if self.previous_code == protocol.ROOM_STATE then
-      self:set_state(binary_string, it)
-
-    elseif self.previous_code == protocol.ROOM_STATE_PATCH then
-      self:patch(binary_string, it)
-
-    elseif self.previous_code == protocol.ROOM_DATA then
-      local msgpack_cursor = {
-          s = binary_string,
-          i = 1,
-          j = #binary_string,
-          underflow = function() error "missing bytes" end,
-      }
-      local data = msgpack.unpack_cursor(msgpack_cursor)
-      it.offset = msgpack_cursor.i
-
-      self:emit("message", data)
+    if self.serializer_id ~= "fossil-delta" then
+      self.serializer = serializer.new()
     end
 
-    self.previous_code = nil
+    if #message > it.offset and self.serializer.handshake ~= nil then
+      self.serializer:handshake(message, it)
+    end
+
+    self:emit("join")
+
+    -- acknowledge JOIN_ROOM
+    self.connection:send({ protocol.JOIN_ROOM })
+
+  elseif code == protocol.JOIN_ERROR then
+    local err = decode.string(message, it)
+    self:emit("error", err)
+
+  elseif code == protocol.LEAVE_ROOM then
+    self:leave()
+
+  elseif code == protocol.ROOM_STATE then
+    self:set_state(message, it)
+
+  elseif code == protocol.ROOM_STATE_PATCH then
+    self:patch(message, it)
+
+  elseif code == protocol.ROOM_DATA then
+    local msgpack_cursor = {
+        s = binary_string,
+        i = it.offset,
+        j = #binary_string,
+        underflow = function() error "missing bytes" end,
+    }
+    local data = msgpack.unpack_cursor(msgpack_cursor)
+    it.offset = msgpack_cursor.i
+
+    self:emit("message", data)
   end
 
-  cursor.offset = cursor.offset + it.offset - 1
+  -- cursor.offset = cursor.offset + it.offset - 1
 end
 
 function Room:set_state (encoded_state, it)
