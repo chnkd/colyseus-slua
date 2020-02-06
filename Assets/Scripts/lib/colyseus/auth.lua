@@ -1,6 +1,7 @@
 local utils = require('Scripts/lib/colyseus.utils')
 local storage = require('Scripts/lib/colyseus.storage')
 local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
+local Connection = require('Scripts/lib/colyseus.connection')
 
 local Auth = {}
 Auth.__index = Auth
@@ -11,7 +12,7 @@ function Auth.new (endpoint)
   local instance = EventEmitter:new({
     use_https = not sys.get_engine_info().is_debug,
     endpoint = endpoint:gsub("ws", "http"),
-    http_timeout = 10,
+    http_timeout = Connection.config.connect_timeout,
     token = storage.get_item("token"),
 
     ping_interval = 20,
@@ -61,22 +62,30 @@ end
 
 function Auth:get_device_id()
   if self:get_platform_id() ~= nil then
-		return info.device_ident
+    return info.device_ident
   else
-		local unique_id = storage.get_item("device_id")
-		if type(unique_id) ~= "string" then
+    local unique_id = storage.get_item("device_id")
+    if type(unique_id) ~= "string" then
       unique_id = tostring(math.random(0, 9999)) .. tostring(os.time(os.date("!*t")))
       storage.set_item("device_id", unique_id)
-		end
-		return unique_id
-	end
+    end
+    return unique_id
+  end
 end
 
-function Auth:request(method, segments, params, callback, headers, body)
+function Auth:request(method, segments, params, callback, body, headers)
   if not headers then headers = {} end
+
+  -- set default headers
+  if self:has_token() then
+    headers['authorization'] = "Bearer " .. self.token
+  end
+  headers["accept"] = 'application/json'
+  headers["content-type"] = 'application/json'
 
   local has_query_string = false
   local query_params = {}
+
   for k, v in pairs(params) do
     if v ~= nil then
       table.insert(query_params, k .. "=" .. utils.urlencode(tostring(v)))
@@ -92,16 +101,20 @@ function Auth:request(method, segments, params, callback, headers, body)
   options['timeout'] = self.http_timeout
 
   http.request(self:build_url(segments), method, function(self, id, response)
-		local data = response.response ~= '' and json.decode(response.response)
+    local data = response.response ~= '' and json.decode(response.response)
     local has_error = (response.status >= 400)
     local err = nil
+
+    if not data and response.status == 0 then
+      return callback("offline")
+    end
 
     if has_error then
       err = (not data or next(data) == nil) and response.response or data.error
     end
 
     callback(err, data)
-	end, headers, body or "", options)
+  end, headers, body or "", options)
 end
 
 function Auth:login_request (query_params, success_cb)
@@ -181,10 +194,7 @@ function Auth:save(success_cb)
   self:request("PUT", "/auth", {}, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
     success_cb(err, response)
-  end, {
-    ["content-type"] = 'application/json',
-    authorization = "Bearer " .. self.token
-  }, "{" .. table.concat(body_fields, ",") .. "}")
+  end, "{" .. table.concat(body_fields, ",") .. "}")
 end
 
 
@@ -203,66 +213,71 @@ end
 function Auth:ping(success_cb)
   self:request("GET", "/auth", {}, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    if success_cb then
-      success_cb(err, response)
-    end
-  end, { authorization = "Bearer " .. self.token })
+    self:emit("ping", err, response)
+  end)
 end
 
 function Auth:get_friend_requests(success_cb)
   self:request("GET", "/friends/requests", {}, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
     success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+  end)
 end
 
 function Auth:accept_friend_request(user_id, success_cb)
   self:request("PUT", "/friends/requests", { userId = user_id }, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:decline_friend_request(user_id, success_cb)
   self:request("DELETE", "/friends/requests", { userId = user_id }, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:send_friend_request(user_id, success_cb)
   self:request("POST", "/friends/requests", { userId = user_id }, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:get_friends(success_cb)
   self:request("GET", "/friends/all", {}, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
+end
+
+function Auth:remove_friend(user_id, success_cb)
+  self:request("DELETE", "/friends", { userId = user_id }, function(err, response)
+    if err then print("@colyseus/social: " .. tostring(err)) end
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:get_online_friends(success_cb)
   self:request("GET", "/friends/online", {}, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:block_user(user_id, success_cb)
   self:request("POST", "/friends/block", { userId = user_id }, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:unblock_user(user_id, success_cb)
   self:request("PUT", "/friends/block", { userId = user_id }, function(err, response)
     if err then print("@colyseus/social: " .. tostring(err)) end
-    success_cb(err, response)
-  end, { authorization = "Bearer " .. self.token })
+    if success_cb then success_cb(err, response) end
+  end)
 end
 
 function Auth:logout()

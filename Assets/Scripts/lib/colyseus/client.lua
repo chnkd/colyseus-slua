@@ -36,17 +36,8 @@ function client:init(endpoint)
 end
 
 function client:get_available_rooms(room_name, callback)
-  local requestId = self.requestId + 1
-  self.connection:send({ protocol.ROOM_LIST, requestId, room_name })
-
-  -- TODO: add timeout to cancel request.
-
-  self.rooms_available_request[requestId] = function(rooms)
-    self.rooms_available_request[requestId] = nil
-    callback(rooms)
-  end
-
-  self.requestId = requestId
+  local url = "http" .. self.hostname:sub(3) .. "matchmake/" .. room_name
+  self:_request(url, 'GET', callback)
 end
 
 function client:join_or_create(room_name, options, callback)
@@ -61,7 +52,7 @@ function client:join(room_name, options, callback)
   return self:create_matchmake_request('join', room_name, options or {}, callback)
 end
 
-function client:join(room_id, options, callback)
+function client:join_by_id(room_id, options, callback)
   return self:create_matchmake_request('joinById', room_id, options or {}, callback)
 end
 
@@ -83,29 +74,32 @@ function client:create_matchmake_request(method, room_name, options, callback)
   self:_request(url, 'POST', function(err, response)
     if (err) then return callback(err) end
 
-    local room = Room.new(room_name)
-    room.id = response.room.roomId
-    room.sessionId = response.sessionId
-
-    local on_error = function(err)
-      callback(err)
-      room:off()
-    end
-
-    local on_join = function()
-      room:off('error', on_error)
-      callback(nil, room)
-    end
-
-    room:on('error', on_error)
-    room:on('join', on_join)
-    room:on('leave', function()
-      self.rooms[room.id] = nil
-    end)
-    self.rooms[room.id] = room
-
-    room:connect(self:_build_endpoint(response.room.processId .. "/" .. room.id, {sessionId = room.sessionId}))
+    self:consume_seat_reservation(response, callback)
   end, json.encode(options))
+end
+
+function client:consume_seat_reservation(response, callback)
+  local room = Room.new(response.room.name)
+  room.id = response.room.roomId
+  room.sessionId = response.sessionId
+  local on_error = function(err)
+    callback(err)
+    room:off()
+  end
+
+  local on_join = function()
+    room:off('error', on_error)
+    callback(nil, room)
+  end
+
+  room:on('error', on_error)
+  room:on('join', on_join)
+  room:on('leave', function()
+    self.rooms[room.id] = nil
+  end)
+  self.rooms[room.id] = room
+
+  room:connect(self:_build_endpoint(response.room.processId .. "/" .. room.id, {sessionId = room.sessionId}))
 end
 
 function client:_build_endpoint(path, options)

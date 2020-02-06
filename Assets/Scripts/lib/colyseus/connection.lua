@@ -4,6 +4,7 @@ local EventEmitter = require('Scripts/lib/colyseus.eventemitter')
 local msgpack = require('Scripts/lib/colyseus.messagepack.MessagePack')
 
 local connection = {}
+connection.config = { connect_timeout = 10 }
 connection.__index = connection
 
 function connection.new()
