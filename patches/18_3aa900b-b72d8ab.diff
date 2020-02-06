@@ -1,0 +1,13 @@
+diff --git a/colyseus/auth.lua b/colyseus/auth.lua
+index fdc4bf5..ac5398d 100644
+--- a/colyseus/auth.lua
++++ b/colyseus/auth.lua
+@@ -213,7 +213,7 @@ end
+ function Auth:ping(success_cb)
+   self:request("GET", "/auth", {}, function(err, response)
+     if err then print("@colyseus/social: " .. tostring(err)) end
+-    if success_cb then success_cb(err, response) end
++    self:emit("ping", err, response)
+   end)
+ end
+ 

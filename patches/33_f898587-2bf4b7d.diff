@@ -1,0 +1,62 @@
+diff --git a/colyseus/room.lua b/colyseus/room.lua
+index 5b5e006..a7bb530 100644
+--- a/colyseus/room.lua
++++ b/colyseus/room.lua
+@@ -131,10 +131,10 @@ function Room:on_message (binary_string, cursor)
+     self:leave()
+ 
+   elseif code == protocol.ROOM_STATE then
+-    self:set_state(binary_string, it)
++    self:set_state(message, it)
+ 
+   elseif code == protocol.ROOM_STATE_PATCH then
+-    self:patch(binary_string, it)
++    self:patch(message, it)
+ 
+   elseif code == protocol.ROOM_DATA then
+     local msgpack_cursor = {
+diff --git a/colyseus/serialization/fossil_delta.lua b/colyseus/serialization/fossil_delta.lua
+index 518cb4e..4a8f347 100644
+--- a/colyseus/serialization/fossil_delta.lua
++++ b/colyseus/serialization/fossil_delta.lua
+@@ -20,17 +20,17 @@ function fossil_delta:get_state()
+ end
+ 
+ function fossil_delta:set_state(encoded_state, it)
+-  local state_length, state = msgpack.unpacker(encoded_state)()
++  local state_length, state = msgpack.unpacker(utils.byte_array_to_string(encoded_state))()
+   it.offset = it.offset + state_length
+ 
+   self.state:set(state)
+ 
+-  self.previous_state = utils.string_to_byte_array(encoded_state)
++  self.previous_state = encoded_state
+ end
+ 
+ function fossil_delta:patch(binary_patch, it)
+   -- apply patch
+-  self.previous_state = delta.apply(self.previous_state, utils.string_to_byte_array(binary_patch))
++  self.previous_state = delta.apply(self.previous_state, binary_patch)
+   it.offset = it.offset + #self.previous_state
+ 
+   -- decode patched state
+diff --git a/colyseus/serialization/schema.lua b/colyseus/serialization/schema.lua
+index 248eabd..83fac90 100644
+--- a/colyseus/serialization/schema.lua
++++ b/colyseus/serialization/schema.lua
+@@ -19,13 +19,13 @@ end
+ function schema_serializer:set_state(encoded_state, it)
+   -- print("schema_serializer:set_state")
+ 
+-  self.state:decode(utils.string_to_byte_array(encoded_state), it)
++  self.state:decode(encoded_state, it)
+ end
+ 
+ function schema_serializer:patch(binary_patch, it)
+   -- print("schema_serializer:patch")
+ 
+-  self.state:decode(utils.string_to_byte_array(binary_patch), it)
++  self.state:decode(binary_patch, it)
+ end
+ 
+ function schema_serializer:handshake(bytes, it)

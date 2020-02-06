@@ -1,0 +1,19 @@
+diff --git a/colyseus/serialization/schema/array_schema.lua b/colyseus/serialization/schema/array_schema.lua
+index 63dc7a0..1d86b54 100644
+--- a/colyseus/serialization/schema/array_schema.lua
++++ b/colyseus/serialization/schema/array_schema.lua
+@@ -16,6 +16,14 @@ function array_schema:trigger_all()
+     end
+ end
+ 
++function array_schema:each(cb)
++    for key, value in ipairs(self) do
++        if key ~= 'on_add' and key ~= 'on_remove' and key ~= 'on_change' then
++            cb(value, key)
++        end
++    end
++end
++
+ function array_schema:clone()
+     local cloned = array_schema:new(table.clone(self))
+     cloned['on_add'] = self['on_add']
