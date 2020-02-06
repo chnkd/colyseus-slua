@@ -1,0 +1,66 @@
+diff --git a/colyseus/auth.lua b/colyseus/auth.lua
+index 2e6fa5f..301df30 100644
+--- a/colyseus/auth.lua
++++ b/colyseus/auth.lua
+@@ -1,6 +1,7 @@
+ local utils = require "colyseus.utils"
+ local storage = require "colyseus.storage"
+ local EventEmitter = require('colyseus.eventemitter')
++local Connection = require('colyseus.connection')
+ 
+ local Auth = {}
+ Auth.__index = Auth
+@@ -11,7 +12,7 @@ function Auth.new (endpoint)
+   local instance = EventEmitter:new({
+     use_https = not sys.get_engine_info().is_debug,
+     endpoint = endpoint:gsub("ws", "http"),
+-    http_timeout = 10,
++    http_timeout = Connection.config.connect_timeout,
+     token = storage.get_item("token"),
+ 
+     ping_interval = 20,
+@@ -104,6 +105,10 @@ function Auth:request(method, segments, params, callback, body, headers)
+     local has_error = (response.status >= 400)
+     local err = nil
+ 
++    if not data and response.status == 0 then
++      return callback("offline")
++    end
++
+     if has_error then
+       err = (not data or next(data) == nil) and response.response or data.error
+     end
+diff --git a/colyseus/client.lua b/colyseus/client.lua
+index 4b39833..aff0d96 100644
+--- a/colyseus/client.lua
++++ b/colyseus/client.lua
+@@ -129,12 +129,16 @@ function client:_request(url, method, headers, body, callback)
+     local has_error = (response.status >= 400)
+     local err = nil
+ 
++    if not data and response.status == 0 then
++      return callback("offline")
++    end
++
+     if has_error or data.error then
+       err = (not data or next(data) == nil) and response.response or data.error
+     end
+ 
+     callback(err, data)
+-	end, headers, body or "", { timeout = 10 })
++	end, headers, body or "", { timeout = Connection.config.connect_timeout })
+ end
+ 
+ return client
+diff --git a/colyseus/connection.lua b/colyseus/connection.lua
+index aecf188..8ace831 100644
+--- a/colyseus/connection.lua
++++ b/colyseus/connection.lua
+@@ -5,6 +5,7 @@ local msgpack = require('colyseus.messagepack.MessagePack')
+ local websocket_async = require "websocket.client_async"
+ 
+ local connection = {}
++connection.config = { connect_timeout = 10 }
+ connection.__index = connection
+ 
+ function connection.new (endpoint)
