@@ -4,11 +4,11 @@
 --
 -- This file is part of Colyseus: https://github.com/colyseus/colyseus
 --
-local bit = require 'Scripts/lib/colyseus.serialization.bit'
+local bit = require('Scripts/lib/colyseus.serialization.bit')
 local ldexp = math.ldexp or mathx.ldexp
 
-local array_schema = require 'colyseus.serialization.schema.array_schema'
-local map_schema = require 'colyseus.serialization.schema.map_schema'
+local array_schema = require('Scripts/lib/colyseus.serialization.schema.array_schema')
+local map_schema = require('Scripts/lib/colyseus.serialization.schema.map_schema')
 
 -- START SPEC --
 local spec = {
