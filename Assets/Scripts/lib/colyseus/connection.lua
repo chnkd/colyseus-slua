@@ -21,14 +21,17 @@ end
 
 function connection:send(data)
   if self.ws and self.ws.State == "Open" then
-    if self.is_html5 then
-      -- binary frames are sent by default on HTML5
-      self.ws:send(msgpack.pack(data))
+    -- if self.is_html5 then
+    --   -- binary frames are sent by default on HTML5
+    --   self.ws:send(msgpack.pack(data))
 
-    else
-      -- force binary frame on native platforms
-      self.ws:send(msgpack.pack(data), 0x2)
-    end
+    -- else
+    --   -- force binary frame on native platforms
+    --   self.ws:send(msgpack.pack(data), 0x2)
+    -- end
+    coroutine.resume(coroutine.create(function()
+      Yield(self.ws:Send(msgpack.pack(data)))
+    end))
 
   else
     -- WebSocket not connected.
