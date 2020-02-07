@@ -31,7 +31,7 @@ function connection:send(data)
     --   self.ws:send(msgpack.pack(data), 0x2)
     -- end
     coroutine.resume(coroutine.create(function()
-      Yield(self.ws:Send(msgpack.pack(data)))
+      Yield(self.ws:Send(Slua.ToBytes(msgpack.pack(data))))
     end))
 
   else
