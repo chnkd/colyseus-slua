@@ -83,7 +83,7 @@ function client:consume_seat_reservation(response, callback)
   room.id = response.room.roomId
   room.sessionId = response.sessionId
   local on_error = function(err)
-    callback(err)
+    callback(err, nil)
     room:off()
   end
 
