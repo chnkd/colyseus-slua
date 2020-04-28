@@ -22,18 +22,9 @@ end
 
 function connection:send(data)
   if self.ws and self.ws.State == "Open" then
-    -- if self.is_html5 then
-    --   -- binary frames are sent by default on HTML5
-    --   self.ws:send(msgpack.pack(data))
-
-    -- else
-    --   -- force binary frame on native platforms
-    --   self.ws:send(msgpack.pack(data), 0x2)
-    -- end
     coroutine.resume(coroutine.create(function()
-      Yield(self.ws:Send(Slua.ToBytes(msgpack.pack(data))))
+      Yield(self.ws:Send(Slua.ToBytes(data)))
     end))
-
   else
     -- WebSocket not connected.
     -- Enqueue data to be sent when readyState is OPEN
