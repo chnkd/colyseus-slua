@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@colyseus/schema@^0.5.1":
-  version "0.5.24"
-  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-0.5.24.tgz#0e182c693ca0baf42102d2fa1da0decce380451d"
-  integrity sha512-XPqapMWPCOBf6ciAaS8EaqJ9xBc9zAd9LIw9COoKeKIfY24Wqn09qTQEt0L3OoczlQP0r0nBzgC3BWLo44wrwA==
+"@colyseus/schema@^0.5.19":
+  version "0.5.38"
+  resolved "https://registry.yarnpkg.com/@colyseus/schema/-/schema-0.5.38.tgz#a524e7aa12e86b5ea27709ca06ad2d86fef4e507"
+  integrity sha512-XqaPDhT8Jczn9UpN0Eb2SncmEgFtj4kXWtlUyNVoHR9wFx+pMZzJQKnuSnmvsbBgKxS1mS+Iqxx9JXxmqG4Vzg==
 
 "@gamestdio/clock@^1.1.9":
   version "1.1.9"
@@ -418,12 +418,12 @@ colors@1.0.3:
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
   integrity sha1-BDP0TYCWgP3rYO0mDxsMJi6CpAs=
 
-colyseus@^0.11.29:
-  version "0.11.29"
-  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.11.29.tgz#b02bbc8286aab83f9a37cbead12c0507360a2d75"
-  integrity sha512-GV7VWWt1WVEx35Qe0fbNNwAQhWJSt+xkCHLXZr5eobcxYXuHuUQsYax0/DKumYy0H6DwV7gW0Pn1Q4jJHvD2lQ==
+colyseus@^0.13.3:
+  version "0.13.3"
+  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.13.3.tgz#da33361a0c2a5c118b4364e40ac5b975d7dda770"
+  integrity sha512-JVvW4dU3zpV8/EW7UfJ2o1XRumo8QJjjH+b2fVfOxU2sZG5wHRklkQuSUA/4M5yM98cIckDiFph3+4/hDt4Cfw==
   dependencies:
-    "@colyseus/schema" "^0.5.1"
+    "@colyseus/schema" "^0.5.19"
     "@gamestdio/timer" "^1.3.0"
     "@types/redis" "^2.8.12"
     "@types/ws" "^6.0.1"
