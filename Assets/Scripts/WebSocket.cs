@@ -13,6 +13,7 @@ public class WebSocket : NativeWebSocket.WebSocket
         Task task = base.Connect();
         while (!task.IsCompleted)
         {
+            DispatchMessageQueue();
             yield return null;
         }
     }
