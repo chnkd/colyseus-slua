@@ -10,11 +10,14 @@ function Game:Start()
     room:on('statechange', function(state)
       print('new state:', require('Scripts/lib/inspect')(state))
     end)
-    table.insert(self.rooms, room)
+    room:on('leave', function()
+      self.rooms[room] = nil
+    end)
+    self.rooms[room] = {}
   end)
 end
 function Game:Finish()
-  for i=1, #self.rooms do
-    self.rooms[i]:leave(false)
+  for room, info in self.rooms do
+    room:leave(false)
   end
 end
