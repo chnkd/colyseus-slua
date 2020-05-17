@@ -16,6 +16,9 @@ function Game:Start()
     self.rooms[room] = {}
   end)
 end
+function Game:isOver()
+  return not next(self.rooms) and true or false
+end
 function Game:Finish()
   for room, info in pairs(self.rooms) do
     room:leave(false)
