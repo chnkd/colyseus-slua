@@ -17,7 +17,7 @@ function Game:Start()
   end)
 end
 function Game:Finish()
-  for room, info in self.rooms do
+  for room, info in pairs(self.rooms) do
     room:leave(false)
   end
 end
