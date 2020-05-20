@@ -1,21 +1,21 @@
 const app = new (require('colyseus').Server)({
   server: require('http').createServer()
 })
+const { Schema, defineTypes } = require('@colyseus/schema')
+class Sync extends Schema {
+  constructor () {
+    super()
+    this.namE = 'tourn'
+  }
+}
+defineTypes(Sync, {
+  namE: 'string'
+})
 class Battle extends require('colyseus').Room {
   onCreate (options) {
     this.autoDispose = false
     this.maxClients = options.maxClients
     this.reservedTime = options.reservedTime
-    const { Schema, defineTypes } = require('@colyseus/schema')
-    class Sync extends Schema {
-      constructor () {
-        super()
-        this.name = 'tourn' 
-      }
-    }
-    defineTypes(Sync, {
-      name: 'string'
-    })
     this.setState(new Sync())
   }
   async onLeave (client, consented) {
