@@ -5,11 +5,11 @@ const { Schema, defineTypes } = require('@colyseus/schema')
 class Sync extends Schema {
   constructor () {
     super()
-    this.namE = 'tourn'
+    this.name = 'tourn'
   }
 }
 defineTypes(Sync, {
-  namE: 'string'
+  name: 'string'
 })
 class Battle extends require('colyseus').Room {
   onCreate (options) {
