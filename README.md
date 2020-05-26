@@ -6,6 +6,6 @@
 
 ### v0.1.0
 - slua選用[v1.62](https://github.com/pangweiwei/slua/releases/tag/1.6.2)([fa8177d](https://github.com/pangweiwei/slua/commit/fa8177d516238c46dfaa156e72139756e96bfee3))，暫不考慮不支持LuaJIT的[v1.70](https://github.com/pangweiwei/slua/releases/tag/v1.7.0)([c1b60ba](https://github.com/pangweiwei/slua/commit/c1b60bac0bf202f96cc29ca3fec6a021b7d284df))。
-- colyseus-defold選用[b88ab42](https://github.com/colyseus/colyseus-defold/commit/b88ab4294bd06973afe03826e74ccdb22fa3ed92)。
-- colyseus-unity3d選用[8b32c03](https://github.com/colyseus/colyseus-unity3d/commit/8b32c03c0c37340a916c274f824048523eae477b)。
+- colyseus-defold更新至[f612906](https://github.com/colyseus/colyseus-defold/commit/f61290683db3ad394b9fbf5d76443cda4202c44e)。
+- colyseus-unity3d更新至[8b32c03](https://github.com/colyseus/colyseus-unity3d/commit/8b32c03c0c37340a916c274f824048523eae477b)。
 - 暫時屏蔽Auth、Push和Storage。
