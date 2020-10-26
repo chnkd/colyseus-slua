@@ -490,7 +490,7 @@ namespace NativeWebSocket
 
         public async Task Receive()
         {
-            // await new WaitForBackgroundThread();
+            await new WaitForBackgroundThread();
 
             ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[8192]);
             try
