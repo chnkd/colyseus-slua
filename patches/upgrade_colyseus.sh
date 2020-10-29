@@ -18,7 +18,7 @@ function dir() {
 function list() {
   gfind $* -name "*.lua" -printf "%P\n"
 }
-#echo $(rev you $(rev old $(cat $version)^)) > $version
+echo $(rev you $(rev old $(cat $version)^)) > $version
 old=$(list $my | sort)
 new=$(list $(dir you) | sort)
 for file in $(comm -23 <(echo "$old") <(echo "$new")); do
