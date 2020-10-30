@@ -1,5 +1,5 @@
-local map_schema = require('colyseus.serialization.schema.types.map_schema')
-local array_schema = require('colyseus.serialization.schema.types.array_schema')
+local map_schema = require('Scripts/lib/colyseus.serialization.schema.types.map_schema')
+local array_schema = require('Scripts/lib/colyseus.serialization.schema.types.array_schema')
 
 local types = {}
 local typemap = {}

@@ -1,4 +1,4 @@
-local bit = require 'Scripts/lib/colyseus.serialization.bit'
+local bit = require('Scripts/lib/colyseus.serialization.bit')
 
 local function uint8 (bytes, num)
   table.insert(bytes, bit.band(num, 255))
