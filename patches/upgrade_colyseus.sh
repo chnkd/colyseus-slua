@@ -27,7 +27,9 @@ for file in $(comm -23 <(echo "$old") <(echo "$new")); do
   rm $my/$file
 done
 for file in $(comm -13 <(echo "$old") <(echo "$new")); do
-  install $(dir you)/$file $my/$(dirname $file)
+  folder=$my/$(dirname $file)
+  mkdir -p $folder
+  install $(dir you)/$file $folder
 done
 for file in $(comm -12 <(echo "$old") <(echo "$new")); do
   myfile=$my/$file
