@@ -10,7 +10,7 @@ function rev() {
   pushd . > /dev/null
   cd $repo
   id=$(git log --reverse --ancestry-path $2..master --oneline | head -1 | cut -d' ' -f1)
-  echo $id
+  echo ${id:-$2}
   git reset -q --hard $id
   popd > /dev/null
 }
@@ -27,7 +27,7 @@ for file in $(comm -23 <(echo "$old") <(echo "$new")); do
   rm $my/$file
 done
 for file in $(comm -13 <(echo "$old") <(echo "$new")); do
-  install $(dir you)/$file $my
+  install $(dir you)/$file $my/$(dirname $file)
 done
 for file in $(comm -12 <(echo "$old") <(echo "$new")); do
   myfile=$my/$file
