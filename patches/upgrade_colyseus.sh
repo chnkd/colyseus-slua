@@ -4,9 +4,11 @@ wd=$(dirname $0)
 my=$wd/../Assets/Scripts/lib/colyseus
 version=$wd/version.txt
 function rev() {
-  git clone -q https://github.com/colyseus/colyseus-defold.git $1
+  repo=$wd/$1
+  rm -rf $repo
+  git clone -q https://github.com/colyseus/colyseus-defold.git $repo
   pushd . > /dev/null
-  cd $1
+  cd $repo
   id=$(git log --reverse --ancestry-path $2..master --oneline | head -1 | cut -d' ' -f1)
   echo $id
   git reset -q --hard $id
