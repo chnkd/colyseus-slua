@@ -65,15 +65,22 @@ namespace SLua
             {
                 EditorApplication.update += Update;
                 // use this delegation to ensure dispose luavm at last
-                EditorApplication.playmodeStateChanged += () =>
+                EditorApplication.playModeStateChanged += (PlayModeStateChange state) =>
                 {
-
-                    if (isPlaying == true && EditorApplication.isPlaying == false)
+                    switch (state)
                     {
-                        if (LuaState.main != null) LuaState.main.Dispose();
+                        case PlayModeStateChange.ExitingEditMode:
+                            if (isPlaying == true && EditorApplication.isPlaying == false)
+                            {
+                                if (LuaState.main != null)
+                                    LuaState.main.Dispose();
+                                isPlaying = false;
+                            }
+                            break;
+                        case PlayModeStateChange.EnteredPlayMode:
+                            isPlaying = true;
+                            break;
                     }
-
-                    isPlaying = EditorApplication.isPlaying;
                 };
             }
 
@@ -1931,6 +1938,30 @@ namespace SLua
                 if (((List<string>)aFilterList).Contains(methodString))
                 {
                     return true;
+                }
+            }
+			
+			if (mi.DeclaringType.IsGenericType && mi.DeclaringType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                if (mi.MemberType == MemberTypes.Constructor)
+                {
+                    ConstructorInfo constructorInfo = mi as ConstructorInfo;
+                    var parameterInfos = constructorInfo.GetParameters();
+                    if (parameterInfos.Length > 0)
+                    {
+                        if (typeof(System.Collections.IEnumerable).IsAssignableFrom(parameterInfos[0].ParameterType))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if (mi.MemberType == MemberTypes.Method)
+                {
+                    var methodInfo = mi as MethodInfo;
+                    if (methodInfo.Name == "TryAdd" || methodInfo.Name == "Remove" && methodInfo.GetParameters().Length == 2)
+                    {
+                        return true;
+                    }
                 }
             }
 
