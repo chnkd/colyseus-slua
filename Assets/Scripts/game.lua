@@ -8,7 +8,7 @@ function Game:Start()
       return
     end
     room:on('statechange', function(state)
-      print('new state:', require('Scripts/lib/inspect')(state))
+      print('new state:', require('Scripts/lib/inspect')(state.name))
     end)
     room:on('leave', function()
       self.rooms[room] = nil
