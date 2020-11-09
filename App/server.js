@@ -18,27 +18,29 @@ class Battle extends require('colyseus').Room {
     this.reservedTime = options.reservedTime
     this.setState(new Sync())
   }
+  async allowReconnection(client) {
+    console.info('reserve')
+    return await super.allowReconnection(client, this.reservedTime).then(() => {
+      console.info('rejoin')
+      return true
+    }).catch(() => {
+      if (this.autoDispose) {
+        return true
+      } else {
+	console.log('available')
+	return false
+      }
+    })
+  }
+  async isReserved(client, consented) {
+    return consented ? this.autoDispose : await this.allowReconnection(client)
+  }
   async onLeave (client, consented) {
-    console.info('leaved')
-    var isRemoval
-    if (consented) {
-      isRemoval = !this.autoDispose
-    } else {
-      console.info('reserved')
-      isRemoval = await this.allowReconnection(client, this.reservedTime).then(function () {
-        console.info('rejoined')
-        return false
-      }.bind(this)).catch(function () {
-        if (this.autoDispose) {
-          return false
-        } else {
-          return true
-        }
-      }.bind(this))
+    console.info('leave')
+    if (await this.isReserved(client, consented)) {
+      return
     }
-    if (isRemoval) {
-      this.disconnect()
-    }
+    this.disconnect()
   }
   async onDispose () {
     console.info('dispose')
