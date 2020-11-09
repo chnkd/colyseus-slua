@@ -1,7 +1,9 @@
 {
   "license": "MIT",
   "dependencies": {
-    "colyseus": "^0.14.1",
+    "colyseus": "^0.14.1"
+  },
+  "devDependencies": {
     "npm-check-updates": "^9.2.2"
   }
 }
