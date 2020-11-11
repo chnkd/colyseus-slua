@@ -1,0 +1,14 @@
+{
+  "extends": "eslint-config-standard",
+  "rules": {
+    "prefer-promise-reject-errors": [
+      "error",
+      {
+        "allowEmptyReject": true
+      }
+    ]
+  },
+  "globals": {
+    "logger": "readonly"
+  }
+}
